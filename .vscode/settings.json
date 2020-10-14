@@ -1,0 +1,8 @@
+{
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+    "python.linting.mypyEnabled": false,
+    "python.linting.pylamaEnabled": false,
+    "python.linting.banditEnabled": false,
+    "python.pythonPath": "c:\\Smart_D20\\.venv\\Scripts\\python.exe"
+}

@@ -1,0 +1,20 @@
+{
+  "eink": {
+    "mode": ["two column", "static"],
+    "items":
+      [
+        ["ability", "each", "base"],
+        ["ability", "each", "!base"]
+      ]
+    },
+  "sharp":{
+    "mode": ["one column", "nested"],
+    "items":
+      {
+        "weapons":
+          ["each"],
+        "spells":
+          ["each"]
+      }
+  }
+}

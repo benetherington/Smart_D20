@@ -1,0 +1,64 @@
+{
+  "ability":
+  {
+    "str": 
+    {
+      "base": 5,
+      "athletics":1
+    },
+    "dex": 
+    {
+      "base": 5,
+      "acrobatics":1,
+      "slight of hand":1,
+      "stealth":1
+    },
+    "int": 
+    {
+      "base": 5,
+      "arcana":1,
+      "history":1,
+      "investigation":1,
+      "nature":1,
+      "religion":1
+    },
+    "wis": 
+    {
+      "base": 5,
+      "animal handling":1,
+      "insight":1,
+      "medicine":1,
+      "perception":1,
+      "survival":1
+    },
+    "cha": 
+    {
+      "base": 5,
+      "deception":1,
+      "intimidation":1,
+      "performance":1,
+      "pursuasion":1
+    }
+  },
+  "spells":
+  {
+    "acid arrow":
+    {
+      "time":"1 action",
+      "range": "90 feet",
+      "description":"A shimmering green arrow streaks toward a target within range and bursts in a spray of acid. Make a ranged spell attack against the target. On a hit, the target takes 4d4 acid damage immediately and 2d4 acid damage at the end of its next turn. On a miss, the arrow splashes the target with acid for half as much of the initial damage and no damage at the end of its next turn.",
+      "damage":"4d4"
+    }
+  },
+  "weapons":
+  {
+    "shortsword":
+    {
+      "damage":"1d6",
+      "weapon_type": "melee",
+      "damage_type": "piercing",
+      "properties": ["finesse","light"],
+      "modifiers": {"ability":"strength"}
+    }
+  }
+}
