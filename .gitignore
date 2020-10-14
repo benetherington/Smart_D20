@@ -1,0 +1,11 @@
+/.pylintrc-disabled
+/.venv
+/.vscode
+/ada-cookiecutter-pylintrc.txt
+/CAD
+/chunk_test.py
+/decorator_test.py
+/depricated button.py
+/display_demo_code.py
+/dnd.py
+/__pycache__
