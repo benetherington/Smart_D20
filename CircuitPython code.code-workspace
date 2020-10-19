@@ -2,13 +2,16 @@
   "folders": [
     {
       "path": "."
+    },
+    {
+      "path": "E:\\"
     }
   ],
   "settings": {
     "python.autoComplete.extraPaths": [
       "c:\\Users\\Ben\\.vscode\\extensions\\joedevivo.vscode-circuitpython-0.1.3\\boards\\0x239A\\0x8026",
       "c:\\Users\\Ben\\.vscode\\extensions\\joedevivo.vscode-circuitpython-0.1.3\\stubs",
-      "c:\\Users\\Ben\\AppData\\Roaming\\Code\\User\\globalStorage\\joedevivo.vscode-circuitpython\\bundle\\20201009\\adafruit-circuitpython-bundle-py-20201014\\lib"
+      "c:\\Users\\Ben\\AppData\\Roaming\\Code\\User\\globalStorage\\joedevivo.vscode-circuitpython\\bundle\\20201015\\adafruit-circuitpython-bundle-py-20201019\\lib"
     ],
     "circuitpython.board.vid": "0x239A",
     "circuitpython.board.pid": "0x8026",
@@ -17,6 +20,9 @@
     "python.linting.pylintArgs": ["--disable", "import-error,pointless-string-statement",
                                   "--disable", "missing-module-docstring,missing-class-docstring",
                                   "--indent-string", "'  '",
-                                  "--good-names", "x,xx,bx,y,yy,by,w,bw,h,bh,i"]
+                                  "--good-names",
+                                  "x,xx,bx,y,yy,by,w,bw,h,bh,i,f"
+                                ],
+                                "circuitpython.board.version": "6.0.0-alpha.3"
   }
 }

@@ -68,7 +68,7 @@ class Buttons():
   def check_interrupts(self):
     # called by main loop whenever we're ready to look for button presses
     for pin in self.mcp2.int_flag:
-      print(f"pin: {pin}")
+      print(f"Interrupt on pin {pin}")
       self.buttons_callbacks[pin].callback()
     self.mcp2.clear_ints()
   

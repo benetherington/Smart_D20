@@ -1,4 +1,7 @@
-from adafruit_display_text.label import Label
+from adafruit_display_text.bitmap_label import Label
+from adafruit_bitmapsaver import save_pixels
+import storage
+import sys
 
 '''
 PIXELS
@@ -75,28 +78,32 @@ def draw_padded_row_lines(display, num_rows=18, padding=4, prime_color=1, pad_co
   # hatched areas
   draw_hatched_area(display, 0,0,                     display.WIDTH,padding, pad_color)
   draw_hatched_area(display, 0,display.HEIGHT-padding,display.WIDTH,padding, pad_color)
-def display_options_rows(display, num_rows, options=None, rich_options=None,
-                         top_padding=0, ani_clock=0):
+def display_options_rows(display, options=None, rich_options=None, ani_clock=0,
+                         num_rows=None, top_padding=None):
   '''
     One of the heavy lifters! Displays button options in rows.
-    num_rows is the number of rows on the display, whether or not they're getting options.
+
+    display is an instance of EinkDisplay or SharpDisplay.
     options is a list of strings to display with default fonts and scaling.
     rich_options can be used instead to specify both font and scale. This argument should be a list
-    of lists of dicts. Each dict should specify option string, font, and scale int. Each inner list
-    should contain all the dicts that will be displayed on a single row. This looks like:
-      [
-        [
-          {"option": "Intelligence", "font": f["knxt-20"], "scale": 1},
-          {"option": "+1", "font": f["knxt-20"], "scale": 2}
-        ],
-        [
-          {"option": "Dexterity", "font": f["knxt-20"], "scale": 1},
-          {"option": "-1", "font": f["knxt-20"], "scale": 2}
-        ]
-      ]
-    top_padding is the number of pixels to leave blank above the first row.
+        of lists of dicts. Each dict should specify option string, font, and scale int. Each inner
+        list should contain all the dicts that will be displayed on a single row. This looks like:
+          [
+            [
+              {"option": "Intelligence", "font": f["knxt-20"], "scale": 1},
+              {"option": "+1", "font": f["knxt-20"], "scale": 2}
+            ],
+            [
+              {"option": "Dexterity", "font": f["knxt-20"], "scale": 1},
+              {"option": "-1", "font": f["knxt-20"], "scale": 2}
+            ]
+          ]
     ani_clock is only used for the SHARP display, and tells us what frame we're on for scrolling
-    large labels.
+        large labels.
+    num_rows is the number of rows on the display, whether or not they're getting options. Defaults
+        to display.NUM_ROWS.
+    top_padding is the number of pixels to leave blank above the first row. Defaults to
+        display.TOP_PADDING or 0.
   '''
   if options is not None:
     rich_options = [ [{"option": option, "font": display.LABEL_FONT, "scale": display.LABEL_SCALE}]
@@ -106,6 +113,13 @@ def display_options_rows(display, num_rows, options=None, rich_options=None,
       raise ValueError("display_options_rows requires either options or rich_options argument.")
   if len(rich_options[0]) > 2:
     raise ValueError("display_options_rows has not implemented >2 columns yet")
+  if num_rows is None:
+    num_rows = display.NUM_ROWS
+  if top_padding is None:
+    if hasattr(display, "TOP_PADDING"):
+      top_padding = display.TOP_PADDING
+    else:
+      top_padding = 0
 
   '''CREATE LABELS'''
   rows = {"column_max_widths": [0 for column in rich_options[0]],
@@ -239,3 +253,20 @@ def display_nav(display, nav_options, font=None, scale=None, num_rows=5):
 #   self.draw_hatched_area(63, 0, 4, self.HEIGHT, self.BLACK)
 #   if refresh_now:
 #     self.refresh()
+def save_tile_grid(tilegrid):
+  print("remounting")
+  storage.remount("/", False)
+  print("remounted")
+  p = displayio.Palette(3)
+  p[0] = 0xffffff # white
+  p[1] = 0xff0000 # actually orange on the display
+  p[2] = 0x000000 # black
+  print("writing")
+  try:
+    save_pixels("tilegrid.bmp", tilegrid.bitmap, p)
+  except Exception as e:
+          sys.print_exception(e)
+  print("written")
+  print("remounting")
+  storage.remount("/", True)
+  print("remounted")
