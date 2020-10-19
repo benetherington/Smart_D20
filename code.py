@@ -7,14 +7,13 @@ Makes DND rolls with modifiers at the touch of a button!
 # UTILITIES
 import sys # pylint: disable=unused-import
 import time
-import json
 
 # MICROCONTROLLER IO
 import board
 import busio
 # from analogio import AnalogIn
-from digitalio import DigitalInOut, Direction # pylint: disable=unused-import
 import digitalio # pylint: disable=unused-import
+import displayio # pylint: disable=unused-import
 
 # LOCAL
 # from dnd import *
@@ -27,52 +26,32 @@ from dungeon_master import DungeonMaster
 
 
 '''
+CONFIGURE PINS
+'''
+displayio.release_displays()
+i2c = busio.I2C(board.SCL, board.SDA)
+spi = board.SPI()
+SHARP_CS_PIN = board.D4
+EINK_CS_PIN = board.A1
+EINK_DC_PIN = board.A4
+EINK_ENABLE_PIN = None # will be A2
+led = digitalio.DigitalInOut(board.D13)
+led.direction = digitalio.Direction.OUTPUT
+
+
+'''
 INIT DISPLAYS
 '''
-spi = board.SPI()
-sharp = SharpDisplay(spi=spi, chip_select_pin=board.D4)
-eink = EinkDisplay(spi=spi, chip_select_pin=board.A1, enable_pin=None)
+sharp = SharpDisplay(spi=spi, chip_select_pin=SHARP_CS_PIN)
+eink = EinkDisplay(spi=spi, chip_select_pin=EINK_CS_PIN, data_command_pin=EINK_DC_PIN,
+                   enable_pin=EINK_ENABLE_PIN)
 eink.primary_display = sharp # eink.sleep() re-wakens the primary display
+
 
 '''
 INIT BUTTONS
 '''
-led = digitalio.DigitalInOut(board.D13)
-led.direction = digitalio.Direction.OUTPUT
-
-i2c = busio.I2C(board.SCL, board.SDA)
 buttons = Buttons(i2c, display=sharp, led=led)
-
-
-
-'''
-LOAD DATA
-'''
-# with open('character_sheet.json') as f
-#   character = json.load(f, object_hook=object_builder)
-
-character = [ # e-ink columns are 64-2= 62 px wide
-              ("Acrobatics", "+1"),
-              ("Animal Handling", "+2"),
-              ("Arcana", "+3"),
-              ("Athletics", "+4"),
-              ("Decepition", "+5"),
-              ("History", "+6"),
-              ("Insight", "+7"),
-              ("Intimidation", "+8"),
-              ("Investigation", "+9"),
-              ("Medicine", "+1"),
-              ("Nature", "+2"),
-              ("Perception", "+3"),
-              ("Performance", "+4"),
-              ("Persuasion", "+5"),
-              ("Religion", "+6"),
-              ("Slight of Hand", "+7"),
-              ("Stealth", "+8"),
-              ("Survival", "+9")
-            ]
-character = json.
-
 
 
 '''
@@ -96,8 +75,8 @@ buttons.set_callback("lower", blink_led)
 INIT GAME RULES
 '''
 dungeon_master = DungeonMaster(eink=eink, sharp=sharp, buttons=buttons,
-                               character=character, menu_structure="./menu_structure.json")
-dungeon_master.update_eink()
+                               character_filepath="./character_sheet.json",
+                               menu_structure_filepath="./menu_structure.json")
 dungeon_master.main_menu()
 
 

@@ -16,6 +16,7 @@ class SharpDisplay():
   # dimensions and colors
   WIDTH = 144
   HEIGHT = 168
+  NUM_ROWS = 6
   palette = displayio.Palette(2)
   palette[0] = 0x000000
   palette[1] = 0xffffff

@@ -1,10 +1,10 @@
 {
   "eink": {
-    "mode": ["two column", "static"],
+    "mode": ["two column", "flat"],
     "items":
       [
-        ["ability", "each", "base"],
-        ["ability", "each", "!base"]
+        ["ability", "each", "<:base"],
+        ["ability", "each", "!:base"]
       ]
     },
   "sharp":{
