@@ -2,7 +2,7 @@
 import time
 
 # BOARD IO
-# import board
+import board
 import adafruit_il0373
 from digitalio import DigitalInOut, Direction # pylint: disable=unused-import
 
@@ -16,6 +16,7 @@ class EinkDisplay:
   # dimensions and colors
   WIDTH = 128
   HEIGHT = 296
+  NUM_ROWS = 18
   p = displayio.Palette(3)
   p[0] = 0xffffff # white
   p[1] = 0xff0000 # actually orange on the display
@@ -24,23 +25,34 @@ class EinkDisplay:
   ORANGE = 1
   BLACK = 2
 
-  def __init__(self, spi, chip_select_pin, enable_pin):
+  def __init__(self, spi, chip_select_pin, data_command_pin, enable_pin, primary_display=None):
+    # HANDLE ARGUMENTS
     self.spi = spi
-    self.chip_select_pin = chip_select_pin
-    self.enable_pin = digitalio.DigitalInOut(enable_pin) # pylint: disable=undefined-variable
-    # self.enable_pin.direction = digitalio.Direction.OUTPUT
-    # self.enable_pin.value = False
+    self.cs_pin = chip_select_pin
+    self.dc_pin = data_command_pin
+    if enable_pin is None:
+      self.enable_pin = None
+    else:
+      self.enable_pin = DigitalInOut(enable_pin) # pylint: disable=undefined-variable
+      # self.enable_pin.value = False
+    if primary_display is None:
+      self.primary_display = None # will be set after sharp is initiated
+    else:
+      self.primary_display = primary_display
+    # HOUSEKEEPING
     self.display = None # will be set on wake_up
-    self.primary_display = None
     self.next_safe_refresh = time.time()
-    # initialize background bitmap
+    # INIT BACKGROUND BMP
     self.background = displayio.Bitmap(self.WIDTH, self.HEIGHT, 3)
     background_grid = displayio.TileGrid(self.background, pixel_shader=self.p)
-    # initialize the top-level group
+    # INIT DISPLAY GROUP
     self.layers = displayio.Group(max_size=3)
     self.layers.append(background_grid)             # layers[0] is background
     self.layers.append(displayio.Group(max_size=10)) # layers[1] is nav interface
     self.layers.append(displayio.Group(max_size=36)) # layers[2] is button labels
+    self.background = self.layers[0]
+    self.nav =        self.layers[1]
+    self.labels =     self.layers[2]
 
   '''
   CONTROL FUNCTIONS
@@ -52,7 +64,8 @@ class EinkDisplay:
     '''
     displayio.release_displays()
     # self.enable_pin.value = True
-    bus = displayio.FourWire(self.spi, chip_select=self.chip_select_pin, baudrate=1000000)
+    bus = displayio.FourWire(self.spi, chip_select=self.cs_pin, command=self.dc_pin,
+                             baudrate=1000000)
     time.sleep(1)  # Wait a bit
     self.display = adafruit_il0373.IL0373(bus, busy_pin=None, rotation=0,
                                      highlight_color=0xff0000,
